@@ -126,11 +126,21 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 				}	
 					
 				// set the max-height of control to y value of map object
+				this._default_maxHeight = this.options.container_maxHeight ?  this.options.container_maxHeight : (this._map._size.y - 70);
+				containers[c].style.maxHeight = this._default_maxHeight + "px";
 				
-				containers[c].style.maxHeight = (this._map._size.y - 70) + "px";
 			}	
-		
 			
+			window.onresize = this._on_resize_window.bind(this);
+			
+		},
+			
+		_on_resize_window : function(){
+			// listen to resize of screen to reajust de maxHeight of container
+			for(var c = 0; c < containers.length; c++ ){
+				// input the new value to height
+				containers[c].style.maxHeight = (window.innerHeight-90) < this._default_maxHeight ? (window.innerHeight - 90) + "px" : this._default_maxHeight + "px";
+			}
 		},
 
 		_addLayer : function (layer, name, group, groupExpanded, overlay) {

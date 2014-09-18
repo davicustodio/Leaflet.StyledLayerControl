@@ -43,9 +43,47 @@
 			var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
 			
 			// Bing layers
-			var bing1 = new L.BingLayer("AvZ2Z8Jve41V_bnPTe2mw4Xi8YWTyj2eT87tSGSsezrYWiyaj0ldMaVdkyf8aik6");
+			var bing1 = new L.BingLayer("AvZ2Z8Jve41V_bnPTe2mw4Xi8YWTyj2eT87tSGSsezrYWiyaj0ldMaVdkyf8aik6", {type: 'Aerial'});
 			var bing2 = new L.BingLayer("AvZ2Z8Jve41V_bnPTe2mw4Xi8YWTyj2eT87tSGSsezrYWiyaj0ldMaVdkyf8aik6", {type: 'Road'});
-		
+			
+			// Sao Paulo Soybeans Plant
+			var soybeans_sp = new L.LayerGroup();
+			L.marker([-22, -49.80]).addTo(soybeans_sp),
+			L.marker([-23, -49.10]).addTo(soybeans_sp),
+			L.marker([-21, -49.50]).addTo(soybeans_sp);
+			
+			// Sao Paulo Corn Plant
+			var corn_sp = new L.LayerGroup();
+			L.marker([-22, -48.10]).addTo(corn_sp),
+			L.marker([-21, -48.60]).addTo(corn_sp);
+			
+			// Rio de Janeiro Bean Plant
+			var bean_rj = new L.LayerGroup();
+			L.marker([-22, -42.10]).addTo(bean_rj),
+			L.marker([-23, -42.78]).addTo(bean_rj);
+			
+			// Rio de Janeiro Corn Plant
+			var corn_rj = new L.LayerGroup();
+			L.marker([-22, -43.20]).addTo(corn_rj),
+			L.marker([-23, -43.50]).addTo(corn_rj);
+			
+			// Rio de Janeiro Rice Plant
+			var rice_rj = new L.LayerGroup();
+			L.marker([-22, -42.90]).addTo(rice_rj),
+			L.marker([-22, -42.67]).addTo(rice_rj),
+			L.marker([-23, -42.67]).addTo(rice_rj);
+			
+			// Belo Horizonte Sugar Cane Plant
+			var sugar_bh = new L.LayerGroup();
+			L.marker([-19, -44.90]).addTo(sugar_bh),
+			L.marker([-19, -44.67]).addTo(sugar_bh);
+			
+			// Belo Horizonte Corn Plant
+			var corn_bh = new L.LayerGroup();
+			L.marker([-19.45, -45.90]).addTo(corn_bh),
+			L.marker([-19.33, -45.67]).addTo(corn_bh);
+
+				
 			var map = L.map('map', {
 				center: [-16, -54],
 				zoom: 4
@@ -56,6 +94,7 @@
 			var baseMaps = [
 			                { 
 								groupName : "Google Base Maps",
+								expanded : true,
 								layers    : {
 									"Satellite" :  g_satellite,
 									"Road Map"  :  g_roadmap,
@@ -70,22 +109,41 @@
 							    groupName : "Bing Base Maps",
 								layers    : {
 									"Satellite" : bing1,
-									"Road"      : bing2 
+									"Road"      : bing2
 								}
                             }							
 			];
 		
 			var overlays = [
 							 {
-								groupName : "Primeiro Grupo",
+								groupName : "Sao Paulo",
+								expanded : true,
 								layers    : { 
+									"Soybeans Plant" : soybeans_sp,
+									"Corn Plant" 	 : corn_sp 
 								}	
-                             }					
+                             }, {
+								groupName : "Rio de Janeiro",
+								expanded : true,
+								layers    : { 
+									"Bean Plant"     : bean_rj,
+									"Corn Plant" 	 : corn_rj,
+									"Rice Plant"	 : rice_rj		
+								}	
+                             }, {
+								groupName : "Belo Horizonte",
+								expanded : false,
+								layers    : { 
+									"Sugar Cane Plant"	: sugar_bh,
+									"Corn Plant" 	 	: corn_bh		
+								}	
+                             }							 
 			];
 			
 			var options = {
-				container_width : "300px",
-				exclusive       : false
+				container_width 	: "300px",
+				//container_maxHeight : "350px", 
+				exclusive       	: false
 			};
 		
 		    L.Control.styledLayerControl(baseMaps, overlays, options).addTo(map);
