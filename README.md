@@ -8,7 +8,12 @@ based on the ideas of the plugin: [Leaflet.Groupedlayercontrol](https://github.c
 *Tested with Leaflet 0.7.3*
 
 ### How to use?
+
+
+1 - Include both css and js reference to Leaflet
 ```javascript
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 ```
 
 ### License 
