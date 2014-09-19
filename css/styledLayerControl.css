@@ -113,14 +113,28 @@
 
 .menu-item-radio{
 	font-family: 'Ubuntu-Regular', Arial, sans-serif;
-	font-size: 16px;
+	font-size: 13px;
 	
 }
 
 .menu-item-checkbox{
 	font-family: 'Ubuntu-Regular', Arial, sans-serif;
-	font-size: 15px;
+	font-size: 13px;
 	
+}
+
+.bt_delete{
+    position: relative;
+	float: right;
+	background-image: url(images/delete.png); 
+    background-color: transparent; 
+    background-repeat: no-repeat;  
+    background-position: 0px 0px;  
+    border: none;           
+    cursor: pointer;        
+    height: 16px;   
+    width: 16px;	
+    vertical-align: middle; 
 }
 
 .leaflet-control-layers:hover {
@@ -128,4 +142,6 @@
 	background: #e0e3ec url(images/bgnoise_lg.jpg) repeat top left;
 	border-radius: 5px;
 }
+
+
 

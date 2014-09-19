@@ -18,13 +18,13 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
 			for (i in baseLayers) {
 				for (var j in baseLayers[i].layers) {
-					this._addLayer(baseLayers[i].layers[j], j, baseLayers[i].groupName, baseLayers[i].expanded, false);
+					this._addLayer(baseLayers[i].layers[j], j, baseLayers[i], false);
 				}
 			}
 
 			for (i in groupedOverlays) {
 				for (var j in groupedOverlays[i].layers) {
-					this._addLayer(groupedOverlays[i].layers[j], j, groupedOverlays[i].groupName, groupedOverlays[i].expanded, true);
+					this._addLayer(groupedOverlays[i].layers[j], j, groupedOverlays[i], true);
 				}
 			}
 			
@@ -143,7 +143,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 			}
 		},
 
-		_addLayer : function (layer, name, group, groupExpanded, overlay) {
+		_addLayer : function (layer, name, group, overlay) {
 			var id = L.Util.stamp(layer);
 
 			this._layers[id] = {
@@ -160,9 +160,9 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 				}
 
 				this._layers[id].group = {
-					name : group,
+					name : group.groupName,
 					id : groupId,
-					expanded : groupExpanded
+					expanded : group.groupExpanded
 				};
 			}
 
@@ -250,7 +250,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 				
 				label.className = "menu-item-radio"; 
 			}
-
+			
+			
 			input.layerId = L.Util.stamp(obj.layer);
 
 			L.DomEvent.on(input, 'click', this._onInputClick, this);
@@ -260,6 +261,15 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
 			label.appendChild(input);
 			label.appendChild(name);
+			
+			// configure the delete button for layers with attribute removable = true
+			if( obj.layer.removable ){
+				var bt_delete = document.createElement("input");
+				bt_delete.type = "button";
+				bt_delete.className = "bt_delete";
+				L.DomEvent.on(bt_delete, 'click', this._onDeleteClick, this);
+				label.appendChild(bt_delete);
+			}	
 
 			if (obj.overlay) {
 				container = this._overlaysList;
@@ -323,6 +333,24 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 			}
 
 			this._handlingClick = false;
+		},
+			
+		_onDeleteClick : function(obj){
+			var node = obj.target.parentElement.childNodes[0];
+			n_obj = this._layers[node.layerId];
+			
+			// verify if obj is a basemap and checked to not remove
+			if( !n_obj.overlay && node.checked ){
+				return false;
+			}	
+			
+			if( this._map.hasLayer(n_obj.layer) ){
+				this._map.removeLayer(n_obj.layer);
+			}
+			
+			obj.target.parentNode.remove();
+			
+			return false;
 		},
 
 		_expand : function () {
