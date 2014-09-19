@@ -113,9 +113,7 @@
 								}
                             }							
 			];
-			
-			soybeans_sp.removable = true;
-		
+					
 			var overlays = [
 							 {
 								groupName : "Sao Paulo",
@@ -134,7 +132,6 @@
 								}	
                              }, {
 								groupName : "Belo Horizonte",
-								expanded : false,
 								layers    : { 
 									"Sugar Cane Plant"	: sugar_bh,
 									"Corn Plant" 	 	: corn_bh		
@@ -142,8 +139,11 @@
                              }							 
 			];
 			
+			soybeans_sp.removable = true;
+			
 			var options = {
 				container_width 	: "300px",
+				group_maxHeight     : "80px",
 				//container_maxHeight : "350px", 
 				exclusive       	: false
 			};

@@ -119,10 +119,10 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
 			container.appendChild(section);
 			
-			// process options of accordionLayers
+			// process options of ac-container css class - to options.container_width and options.container_maxHeight
 			for(var c = 0; c < (containers = container.getElementsByClassName('ac-container')).length; c++ ){
 				if (this.options.container_width) {
-					containers[c].style.width = options.container_width;
+					containers[c].style.width = this.options.container_width;
 				}	
 					
 				// set the max-height of control to y value of map object
@@ -162,7 +162,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 				this._layers[id].group = {
 					name : group.groupName,
 					id : groupId,
-					expanded : group.groupExpanded
+					expanded : group.expanded
 				};
 			}
 
@@ -296,6 +296,11 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 				article = document.createElement('article');
 				article.className = 'ac-large';
 				article.appendChild( label );
+				
+				// process options of ac-large css class - to options.group_maxHeight property
+				if(this.options.group_maxHeight){
+					article.style.maxHeight = this.options.group_maxHeight;
+				}
 				
 				groupContainer.innerHTML = inputElement + inputLabel;
 				groupContainer.appendChild( article );

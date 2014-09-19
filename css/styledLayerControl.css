@@ -106,7 +106,7 @@
 
 .ac-container input.menu:checked ~ article.ac-large{
 	height: auto;
-	max-height : 80px;
+	max-height : 100px;
 	padding-top: 5px;
 	overflow-y: auto;
 }
