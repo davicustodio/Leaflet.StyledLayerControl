@@ -1,0 +1,158 @@
+﻿<html>
+    <head>
+	    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+		<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+		
+		<link rel="stylesheet" href="../css/styledLayerControl.css" />
+		<script src="../src/styledLayerControl.js"></script>
+		
+		<script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
+        <script src="http://matchingnotes.com/javascripts/leaflet-google.js"></script>
+		
+		<script src="plugins/Bing.js"></script>
+		
+		<style>
+			#map {
+				width:100%;
+				height:100%;
+		    }
+			.leaflet-google-layer{
+				z-index: 0;
+			}
+			.leaflet-map-pane{
+				z-index: 100;
+			}
+			
+        </style>
+		
+    </head>
+    <body>
+	
+	    <div id="map"></div>
+	
+	    <script>
+		
+		    // Google layers
+		    var g_roadmap   = new L.Google('ROADMAP');
+			var g_satellite = new L.Google('SATELLITE');
+			var g_terrain   = new L.Google('TERRAIN');
+			
+			// OSM layers
+			var osmUrl='http://{s}.tile.osm.org/{z}/{x}/{y}.png';
+			var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+			var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
+			
+			// Bing layers
+			var bing1 = new L.BingLayer("AvZ2Z8Jve41V_bnPTe2mw4Xi8YWTyj2eT87tSGSsezrYWiyaj0ldMaVdkyf8aik6", {type: 'Aerial'});
+			var bing2 = new L.BingLayer("AvZ2Z8Jve41V_bnPTe2mw4Xi8YWTyj2eT87tSGSsezrYWiyaj0ldMaVdkyf8aik6", {type: 'Road'});
+			
+			// Sao Paulo Soybeans Plant
+			var soybeans_sp = new L.LayerGroup();
+			L.marker([-22, -49.80]).addTo(soybeans_sp),
+			L.marker([-23, -49.10]).addTo(soybeans_sp),
+			L.marker([-21, -49.50]).addTo(soybeans_sp);
+			
+			// Sao Paulo Corn Plant
+			var corn_sp = new L.LayerGroup();
+			L.marker([-22, -48.10]).addTo(corn_sp),
+			L.marker([-21, -48.60]).addTo(corn_sp);
+			
+			// Rio de Janeiro Bean Plant
+			var bean_rj = new L.LayerGroup();
+			L.marker([-22, -42.10]).addTo(bean_rj),
+			L.marker([-23, -42.78]).addTo(bean_rj);
+			
+			// Rio de Janeiro Corn Plant
+			var corn_rj = new L.LayerGroup();
+			L.marker([-22, -43.20]).addTo(corn_rj),
+			L.marker([-23, -43.50]).addTo(corn_rj);
+			
+			// Rio de Janeiro Rice Plant
+			var rice_rj = new L.LayerGroup();
+			L.marker([-22, -42.90]).addTo(rice_rj),
+			L.marker([-22, -42.67]).addTo(rice_rj),
+			L.marker([-23, -42.67]).addTo(rice_rj);
+			
+			// Belo Horizonte Sugar Cane Plant
+			var sugar_bh = new L.LayerGroup();
+			L.marker([-19, -44.90]).addTo(sugar_bh),
+			L.marker([-19, -44.67]).addTo(sugar_bh);
+			
+			// Belo Horizonte Corn Plant
+			var corn_bh = new L.LayerGroup();
+			L.marker([-19.45, -45.90]).addTo(corn_bh),
+			L.marker([-19.33, -45.67]).addTo(corn_bh);
+
+				
+			var map = L.map('map', {
+				center: [-16, -54],
+				zoom: 4
+			});
+		
+		    map.addLayer(g_roadmap);
+			
+			var baseMaps = [
+			                { 
+								groupName : "Google Base Maps",
+								expanded : true,
+								layers    : {
+									"Satellite" :  g_satellite,
+									"Road Map"  :  g_roadmap,
+									"Terreno"   :  g_terrain
+								}
+					        }, {
+							    groupName : "OSM Base Maps",
+								layers    : {
+									"OpenStreetMaps" : osm
+								}
+                            }, {
+							    groupName : "Bing Base Maps",
+								layers    : {
+									"Satellite" : bing1,
+									"Road"      : bing2
+								}
+                            }							
+			];
+					
+			var overlays = [
+							 {
+								groupName : "Sao Paulo",
+								expanded : true,
+								layers    : { 
+									"Soybeans Plant" : soybeans_sp,
+									"Corn Plant" 	 : corn_sp
+								}	
+                             }, {
+								groupName : "Rio de Janeiro",
+								expanded : true,
+								layers    : { 
+									"Bean Plant"     : bean_rj,
+									"Corn Plant" 	 : corn_rj,
+									"Rice Plant"	 : rice_rj		
+								}	
+                             }, {
+								groupName : "Belo Horizonte",
+								layers    : { 
+									"Sugar Cane Plant"	: sugar_bh,
+									"Corn Plant" 	 	: corn_bh		
+								}	
+                             }							 
+			];
+			
+			soybeans_sp.removable = true;
+			
+			var options = {
+				container_width 	: "300px",
+				group_maxHeight     : "80px",
+				//container_maxHeight : "350px", 
+				exclusive       	: true
+			};
+		
+		    L.Control.styledLayerControl(baseMaps, overlays, options).addTo(map);
+		
+		</script>
+
+	    
+    </body>
+	
+</html>
