@@ -6,7 +6,7 @@ A [Leaflet](https://github.com/Leaflet/Leaflet) plugin that implements the manag
 The plugin uses HTML5 and CSS3 to style the presentation in a modern way. 
 The initial ideas were based in the plugin: [Leaflet.Groupedlayercontrol](https://github.com/ismyrnow/Leaflet.groupedlayercontrol)  
 
-![preview](http://davicustodio.github.io/Leaflet.StyledLayerControl/examples/StyledControlLayer-example.png)
+![preview](examples/StyledControlLayer-example.png)
 
 *Tested with Leaflet 0.7.3*
 
@@ -20,10 +20,10 @@ The initial ideas were based in the plugin: [Leaflet.Groupedlayercontrol](https:
 
 ### Live Demos
 
-[A map using StyledLeafletControl - not exclusive group select](http://davicustodio.github.io/Leaflet.StyledLayerControl/examples/example1.html)
-[A map using StyledLeafletControl with exclusive group select](http://davicustodio.github.io/Leaflet.StyledLayerControl/examples/example2.html)
+- [A map using StyledLeafletControl - not exclusive group select](http://davicustodio.github.io/Leaflet.StyledLayerControl/examples/example1.html)
+- [A map using StyledLeafletControl with exclusive group select](http://davicustodio.github.io/Leaflet.StyledLayerControl/examples/example2.html)
 
-### How to use?
+### How to use? 
 
 
 1 - Create the reference to Leaflet 
@@ -138,13 +138,13 @@ The initial ideas were based in the plugin: [Leaflet.Groupedlayercontrol](https:
 ```
 
 7 - Define the options for StyledLayerControl
-	container_width    	- define the main container width - the default is automatic width
-	container_maxHeight	- define the max height to the main container - the default is automatic depending of map and screen height
-	group_maxHeight     - define the max height space of group container - the default is 100px
-	exclusive 			- define that the opened group is exclusive
+- container_width    	- define the main container width - the default is automatic width
+- container_maxHeight	- define the max height to the main container - the default is automatic depending of map and screen height
+- group_maxHeight     - define the max height space of group container - the default is 100px
+- exclusive 			- define that the opened group is exclusive
 	
-	* All the properties are optional
-	* You can also include all properties available under "Options" of control L.control.layers in the same list
+- All the properties are optional
+- You can also include all properties available under "Options" of control L.control.layers in the same list
 	
 ```javascript
 	var options = {
