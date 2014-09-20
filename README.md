@@ -6,7 +6,7 @@ A [Leaflet](https://github.com/Leaflet/Leaflet) plugin that implements the manag
 The plugin uses HTML5 and CSS3 to style the presentation in a modern way. 
 The initial ideas were based in the plugin: [Leaflet.Groupedlayercontrol](https://github.com/ismyrnow/Leaflet.groupedlayercontrol)  
 
-![preview](examples/StyledControlLayer-example.png)
+![preview](https://raw.githubusercontent.com/davicustodio/Leaflet.StyledLayerControl/master/examples/StyledLayerControl-example.png)
 
 *Tested with Leaflet 0.7.3*
 
