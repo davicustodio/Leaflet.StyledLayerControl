@@ -50,13 +50,13 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
 		addBaseLayer : function (layer, name, group) {
 			this._addLayer(layer, name, group, false);
-			//this._update();
+			this._update();
 			return this;
 		},
 
 		addOverlay : function (layer, name, group) {
 			this._addLayer(layer, name, group, true);
-			//this._update();
+			this._update();
 			return this;
 		},
 
@@ -66,6 +66,21 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 			this._update();
 			return this;
 		},
+			
+		removeGroup : function (group_Name){
+			for(group in this._groupList){
+				if( this._groupList[group].groupName == group_Name ){
+					for(layer in this._layers){
+						if( this._layers[layer].group && this._layers[layer].group.name == group_Name ){
+							delete this._layers[layer];
+						}
+					}
+					delete this._groupList[group];
+					this._update();
+					break;
+				}
+			}
+		},	
 
 		_initLayout : function () {
 			var className = 'leaflet-control-layers',
@@ -80,7 +95,6 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 			} else {
 				L.DomEvent.on(container, 'click', L.DomEvent.stopPropagation);
 			}
-
 			
 			var section = document.createElement('section');
 			section.className = 'ac-container ' + className + '-list';
@@ -129,7 +143,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 				this._default_maxHeight = this.options.container_maxHeight ?  this.options.container_maxHeight : (this._map._size.y - 70);
 				containers[c].style.maxHeight = this._default_maxHeight + "px";
 				
-			}	
+			}
 			
 			window.onresize = this._on_resize_window.bind(this);
 			
@@ -154,6 +168,16 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
 			if (group) {
 				var groupId = this._groupList.indexOf(group);
+				
+				// if not find the group search for the name
+				if( groupId === -1 ){
+					for( g in this._groupList){
+						if( this._groupList[g].groupName == group.groupName ){
+							groupId = g;
+							break;
+						}
+					}
+				}
 
 				if (groupId === -1) {
 					groupId = this._groupList.push(group) - 1;
@@ -263,7 +287,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 			label.appendChild(name);
 			
 			// configure the delete button for layers with attribute removable = true
-			if( obj.layer.removable ){
+			if( obj.layer.StyledLayerControl && obj.layer.StyledLayerControl.removable ){
 				var bt_delete = document.createElement("input");
 				bt_delete.type = "button";
 				bt_delete.className = "bt_delete";

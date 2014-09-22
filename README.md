@@ -131,9 +131,12 @@ The initial ideas were based in the plugin: [Leaflet.Groupedlayercontrol](https:
 	];
 ```
 
-6 - Declare which layers can be deleted (create the removable property with true in the layer object)
+6 - Declare which layers can be deleted (create the removable property with true in the options StyledLayerControl that can be created in the layer object). 
+Each layer declared as removable = true will show an icon to delete the user to remove the layer
 ```javascript
-	soybeans_sp.removable = true;
+    soybeans_sp.StyledLayerControl = {
+		removable : true
+	}
 	// ... more removable layers
 ```
 
@@ -157,8 +160,35 @@ The initial ideas were based in the plugin: [Leaflet.Groupedlayercontrol](https:
 
 8 - Create the StyledLayerControl
 ```javascript
-	L.Control.styledLayerControl(baseMaps, overlays, options).addTo(map);
+	var control = L.Control.styledLayerControl(baseMaps, overlays, options);
+	control.addControl(control);
 ```
+
+### How to add and remove layers and groups dynamically ? 
+
+- To add a new base layer dynamically, simply use addBaseLayer and declare that the group layer will belong. 
+Also note that to add a new group, simply specify a group name that does not exist yet, and a new group will be created.
+```javascript
+	control.addBaseLayer( bing1, "Bing Satellite", {groupName : "Bing Maps", expanded: true} );
+	control.addBaseLayer( bing2, "Bing Road", {groupName : "Bing Maps"} );
+```
+
+- To add a new overlay layer dynamically, simply declare the group that de layer will belong.
+```javascript
+	control.addOverlay( corn_bh, "Corn Plant", {groupName : "Belo Horizonte"} );
+```
+
+- To remove a layer dynamically, specify the instance variable of the layer using the method removeLayer.
+```javascript
+	control.removeLayer( corn_sp );
+```
+
+- To remove a group, specify the name of the group in the removeGroup method. 
+By doing so all layers belonging to the group will also be excluded
+```javascript
+	control.removeGroup( "Rio de Janeiro");
+```
+
 
 
 ### License 
