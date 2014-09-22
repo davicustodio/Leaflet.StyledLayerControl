@@ -105,13 +105,13 @@
 								layers    : {
 									"OpenStreetMaps" : osm
 								}
-                            }, {
+                            }/*, {
 							    groupName : "Bing Base Maps",
 								layers    : {
 									"Satellite" : bing1,
 									"Road"      : bing2
-								}
-                            }							
+							  }
+                            } */							
 			];
 					
 			var overlays = [
@@ -149,6 +149,9 @@
 			};
 		
 		    L.Control.styledLayerControl(baseMaps, overlays, options).addTo(map);
+			
+			L.Control.styledLayerControl.addBaseLayer( bing1, "Bing Satellite", {groupName : "Bing Maps"} );
+			L.Control.styledLayerControl.addBaseLayer( bing2, "Bing Road", {groupName : "Bing Maps", expanded: true} );
 		
 		</script>
 

@@ -48,15 +48,15 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 			.off('layerremove', this._onLayerChange);
 		},
 
-		addBaseLayer : function (layer, name) {
-			this._addLayer(layer, name);
-			this._update();
+		addBaseLayer : function (layer, name, group) {
+			this._addLayer(layer, name, group, false);
+			//this._update();
 			return this;
 		},
 
 		addOverlay : function (layer, name, group) {
 			this._addLayer(layer, name, group, true);
-			this._update();
+			//this._update();
 			return this;
 		},
 
