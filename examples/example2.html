@@ -105,13 +105,13 @@
 								layers    : {
 									"OpenStreetMaps" : osm
 								}
-                            }, {
+                            }/*, {
 							    groupName : "Bing Base Maps",
 								layers    : {
 									"Satellite" : bing1,
 									"Road"      : bing2
-								}
-                            }							
+							  }
+                            } */							
 			];
 					
 			var overlays = [
@@ -133,13 +133,15 @@
                              }, {
 								groupName : "Belo Horizonte",
 								layers    : { 
-									"Sugar Cane Plant"	: sugar_bh,
-									"Corn Plant" 	 	: corn_bh		
+									"Sugar Cane Plant"	: sugar_bh		
 								}	
                              }							 
 			];
 			
-			soybeans_sp.removable = true;
+			// configure StyledLayerControl options for the layer soybeans_sp
+			soybeans_sp.StyledLayerControl = {
+				removable : true
+			}
 			
 			var options = {
 				container_width 	: "300px",
@@ -148,9 +150,24 @@
 				exclusive       	: true
 			};
 		
-		    L.Control.styledLayerControl(baseMaps, overlays, options).addTo(map);
+		    var control = L.Control.styledLayerControl(baseMaps, overlays, options);
+			map.addControl(control);
+			
+			// test for adding new base layers dynamically
+			// to create a new group simply add a layer with new group name
+			control.addBaseLayer( bing1, "Bing Satellite", {groupName : "Bing Maps", expanded: true} );
+			control.addBaseLayer( bing2, "Bing Road", {groupName : "Bing Maps"} );
+			
+			// test for adding new overlay layers dynamically
+			control.addOverlay( corn_bh, "Corn Plant", {groupName : "Belo Horizonte"} );
+			
+			//control.removeLayer( corn_sp );
+			
+			//control.removeGroup( "Rio de Janeiro");
+			
+			
 		
-		</script>
+		</script>  
 
 	    
     </body>
