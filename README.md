@@ -178,11 +178,10 @@ Also note that to add a new group, simply specify a group name that does not exi
 	control.addOverlay( corn_bh, "Corn Plant", {groupName : "Belo Horizonte"} );
 ```
 
-- To remove a layer dynamically, specify the instance variable of the layer using the method removeLayer.
+- To remove a layer dynamically, specify the instance variable of the layer using the method removeLayer. (the method ignore the removable property of layers )
 ```javascript
 	control.removeLayer( corn_sp );
 ```
-Note that removeLayer Method ignore the removable property of layers 
 
 - To remove a group, specify the name of the group in the removeGroup method. 
 By doing so all layers belonging to the group will also be excluded
