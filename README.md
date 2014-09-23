@@ -182,6 +182,7 @@ Also note that to add a new group, simply specify a group name that does not exi
 ```javascript
 	control.removeLayer( corn_sp );
 ```
+Note that removeLayer Method ignore the removable property of layers 
 
 - To remove a group, specify the name of the group in the removeGroup method. 
 By doing so all layers belonging to the group will also be excluded
