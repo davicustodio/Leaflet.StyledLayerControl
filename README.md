@@ -48,7 +48,7 @@ The initial ideas were based in the plugin: [Leaflet.Groupedlayercontrol](https:
 	
 	// OSM layers
 	var osmUrl='http://{s}.tile.osm.org/{z}/{x}/{y}.png';
-	var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+	var osmAttrib='Map data Â© <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
 	var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
 	
 	// ... more Base Maps
@@ -161,7 +161,7 @@ Each layer declared as removable = true will show an icon to delete the user to 
 8 - Create the StyledLayerControl
 ```javascript
 	var control = L.Control.styledLayerControl(baseMaps, overlays, options);
-	control.addControl(control);
+	map.addControl(control);
 ```
 
 ### How to add and remove layers and groups dynamically ? 
