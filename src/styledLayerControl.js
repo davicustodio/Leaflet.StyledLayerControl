@@ -153,9 +153,14 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 			// listen to resize of screen to reajust de maxHeight of container
 			for(var c = 0; c < containers.length; c++ ){
 				// input the new value to height
-				containers[c].style.maxHeight = (window.innerHeight-90) < this._default_maxHeight ? (window.innerHeight - 90) + "px" : this._default_maxHeight + "px";
+				containers[c].style.maxHeight = (window.innerHeight-90) < this._removePxToInt(this._default_maxHeight) ? (window.innerHeight - 90) + "px" : this._removePxToInt(this._default_maxHeight) + "px";
 			}
 		},
+    
+        // remove the px from a css value and convert to a int
+        _removePxToInt: function( value ){
+            return parseInt(value.replace( "px", ""));
+        },
 
 		_addLayer : function (layer, name, group, overlay) {
 			var id = L.Util.stamp(layer);
