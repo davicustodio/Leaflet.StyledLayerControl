@@ -381,7 +381,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 			if( this._map.hasLayer(n_obj.layer) ){
 				this._map.removeLayer(n_obj.layer);
 			}
-			
+			this.removeLayer(n_obj.layer); 
 			obj.target.parentNode.remove();
 			
 			return false;
