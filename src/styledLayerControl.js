@@ -284,12 +284,13 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 			input.layerId = L.Util.stamp(obj.layer);
 
 			L.DomEvent.on(input, 'click', this._onInputClick, this);
-
-			var name = document.createElement('span');
-			name.innerHTML = ' ' + obj.name;
-
-			label.appendChild(input);
-			label.appendChild(name);
+			//Instead of a span use a Label, makes it easier to click.
+			var newlabel = document.createElement("Label");
+   			newlabel.className = 'leaflet-control-layers-label';
+			label.appendChild(newlabel);
+			newlabel.appendChild(input);
+			 var t = document.createTextNode(' ' + obj.name);
+			newlabel.appendChild(t);
 			
 			// configure the delete button for layers with attribute removable = true
 			if( obj.layer.StyledLayerControl && obj.layer.StyledLayerControl.removable ){
