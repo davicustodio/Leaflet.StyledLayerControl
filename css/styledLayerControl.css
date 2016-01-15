@@ -143,6 +143,14 @@
 	background: #e0e3ec url(images/bgnoise_lg.jpg) repeat top left;
 	border-radius: 5px;
 }
-
+.leaflet-control-layers-label, .leaflet-control-layers-label:hover:after {
+	background: #FFF !important;
+	color: #000 !important;
+	font-size: 15px !important;
+	height: 20px !important;
+	line-height: 15px !important;
+	font-family: Ubuntu-Regular,Arial,sans-serif !important;
+	font-size: 102% !important;
+}
 
 
