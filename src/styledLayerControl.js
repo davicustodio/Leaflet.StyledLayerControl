@@ -82,6 +82,16 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 			}
 		},	
 
+		selectLayer : function(layer){
+			this._map.addLayer(layer);
+			this._update(); 
+		},
+
+		unSelectLayer : function(layer){
+			this._map.removeLayer(layer);
+			this._update(); 
+		}, 
+
 		_initLayout : function () {
 			var className = 'leaflet-control-layers',
 			container = this._container = L.DomUtil.create('div', className);
