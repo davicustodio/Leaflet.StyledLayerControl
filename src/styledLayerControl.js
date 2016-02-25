@@ -159,7 +159,10 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     
         // remove the px from a css value and convert to a int
         _removePxToInt: function( value ){
-            return parseInt(value.replace( "px", ""));
+        	if( typeof value === 'string'){
+        		return parseInt(value.replace( "px", ""));
+        	}
+        	return value;
         },
 
 		_addLayer : function (layer, name, group, overlay) {
