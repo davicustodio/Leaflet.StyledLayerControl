@@ -131,13 +131,14 @@ The initial ideas were based in the plugin: [Leaflet.Groupedlayercontrol](https:
 	];
 ```
 
-6 - Declare which layers can be deleted (create the removable property with true in the options StyledLayerControl that can be created in the layer object). 
+6 - Declare which layers can be deleted and visible (create the removable property with true in the options StyledLayerControl that can be created in the layer object). 
 Each layer declared as removable = true will show an icon to delete the user to remove the layer
 ```javascript
     soybeans_sp.StyledLayerControl = {
-		removable : true
+		removable : true,
+		visible : false
 	}
-	// ... more removable layers
+	// ... more layers
 ```
 
 7 - Define the options for StyledLayerControl

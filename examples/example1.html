@@ -140,7 +140,14 @@
 			
 			// configure StyledLayerControl options for the layer soybeans_sp
 			soybeans_sp.StyledLayerControl = {
-				removable : true
+				removable : true,
+				visible : false
+			}
+
+			// configure the visible attribute with true to corn_bh
+			corn_bh.StyledLayerControl = {
+				removable : false,
+				visible : true
 			}
 			
 			var options = {
@@ -159,7 +166,7 @@
 			control.addBaseLayer( bing2, "Bing Road", {groupName : "Bing Maps"} );
 			
 			// test for adding new overlay layers dynamically
-			control.addOverlay( corn_bh, "Corn Plant", {groupName : "Belo Horizonte"} );
+			control.addOverlay( corn_bh, "Corn Plant", {groupName : "Belo Horizonte"} ); 
 			
 			//control.removeLayer( corn_sp );
 			
