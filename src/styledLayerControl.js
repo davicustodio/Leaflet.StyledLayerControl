@@ -92,6 +92,33 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         this._update();
     },
 
+    selectGroup: function(group_Name){
+    	this.changeGroup( group_Name, true)
+    },
+
+    unSelectGroup: function(group_Name){
+    	this.changeGroup( group_Name, false)
+    },
+
+    changeGroup: function(group_Name, select){ 
+    	for (group in this._groupList) {
+            if (this._groupList[group].groupName == group_Name) {
+                for (layer in this._layers) {
+                    if (this._layers[layer].group && this._layers[layer].group.name == group_Name) {
+                        if( select ) {
+                        	this._map.addLayer(this._layers[layer].layer);
+                        } else {
+                        	this._map.removeLayer(this._layers[layer].layer);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+        this._update();
+    },
+
+
     _initLayout: function() {
         var className = 'leaflet-control-layers',
             container = this._container = L.DomUtil.create('div', className);
