@@ -131,13 +131,14 @@ The initial ideas were based in the plugin: [Leaflet.Groupedlayercontrol](https:
 	];
 ```
 
-6 - Declare which layers can be deleted (create the removable property with true in the options StyledLayerControl that can be created in the layer object). 
+6 - Declare which layers can be deleted and visible (create the removable property with true in the options StyledLayerControl that can be created in the layer object). 
 Each layer declared as removable = true will show an icon to delete the user to remove the layer
 ```javascript
     soybeans_sp.StyledLayerControl = {
-		removable : true
+		removable : true,
+		visible : false
 	}
-	// ... more removable layers
+	// ... more layers
 ```
 
 7 - Define the options for StyledLayerControl
@@ -189,6 +190,28 @@ By doing so all layers belonging to the group will also be excluded
 	control.removeGroup( "Rio de Janeiro");
 ```
 
+### How to select and unSelect layers dynamically ? 
+
+- To force select a layer dynamically, simply use selectLayer function like this :
+```javascript
+    control.selectLayer( corn_sp );
+```
+
+- So.. to un-select the layer :
+```javascript
+    control.unSelectLayer( corn_sp );
+```
+
+### How to select and unSelect group layers dynamically ? 
+- To force select all layer of a group, use like this :
+```javascript
+    control.selectGroup( "Rio de Janeiro" );
+```
+
+- So.. to un-select the all layer of group :
+```javascript
+    control.unSelectGroup( "Rio de Janeiro" );
+```
 
 
 ### License 

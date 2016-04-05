@@ -140,14 +140,23 @@
 			
 			// configure StyledLayerControl options for the layer soybeans_sp
 			soybeans_sp.StyledLayerControl = {
-				removable : true
+				removable : true,
+				visible : false
+			}
+
+			// configure the visible attribute with true to corn_bh
+			corn_bh.StyledLayerControl = {
+				removable : false,
+				visible : true
 			}
 			
 			var options = {
 				container_width 	: "300px",
 				group_maxHeight     : "80px",
 				//container_maxHeight : "350px", 
-				exclusive       	: false
+				exclusive       	: false,
+				collapsed : true, 
+				position: 'topright'
 			};
 		
 		    var control = L.Control.styledLayerControl(baseMaps, overlays, options);
@@ -159,11 +168,17 @@
 			control.addBaseLayer( bing2, "Bing Road", {groupName : "Bing Maps"} );
 			
 			// test for adding new overlay layers dynamically
-			control.addOverlay( corn_bh, "Corn Plant", {groupName : "Belo Horizonte"} );
+			control.addOverlay( corn_bh, "Corn Plant", {groupName : "Belo Horizonte"} ); 
 			
 			//control.removeLayer( corn_sp );
 			
 			//control.removeGroup( "Rio de Janeiro");
+
+			control.selectLayer(corn_sp); 
+			//control.unSelectLayer(corn_sp); 
+
+			control.selectGroup("Rio de Janeiro");
+			//control.unSelectGroup("Rio de Janeiro");
 			
 			var popup = L.popup()
 			.setLatLng([-16, -54])
