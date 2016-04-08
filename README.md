@@ -179,6 +179,11 @@ Also note that to add a new group, simply specify a group name that does not exi
 	control.addOverlay( corn_bh, "Corn Plant", {groupName : "Belo Horizonte"} );
 ```
 
+- To add a new overlay layer dynamically, and slot it in alphabetically.
+```javascript
+	control.addOverlay( corn_bh, "Corn Plant", {groupName : "Belo Horizonte", sorted : true} );
+```
+
 - To remove a layer dynamically, specify the instance variable of the layer using the method removeLayer. (the method ignore the removable property of layers )
 ```javascript
 	control.removeLayer( corn_sp );

@@ -203,7 +203,9 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     },
 
     _addLayer: function(layer, name, group, overlay) {
-        var id = L.Util.stamp(layer);
+        var id = L.Util.stamp(layer),
+        i,
+        tmp;
 
         this._layers[id] = {
             layer: layer,
@@ -233,6 +235,21 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
                 id: groupId,
                 expanded: group.expanded
             };
+
+            if(group.sorted) {
+                for(i in this._layers) {
+                    if(this._layers[i].group.name == group.groupName) {
+                        if(name < this._layers[i].name) {
+                            tmp = this._layers[id];
+                            this._layers[id] = this._layers[i];
+                            this._layers[i] = tmp;
+                            tmp = this._layers[id].layer._leaflet_id;
+                            this._layers[id].layer._leaflet_id = this._layers[i].layer._leaflet_id;
+                            this._layers[i].layer._leaflet_id = tmp;
+                        }
+                    }
+                }
+            }
         }
 
         if (this.options.autoZIndex && layer.setZIndex) {
