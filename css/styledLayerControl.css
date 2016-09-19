@@ -28,7 +28,13 @@
 	overflow-x: hidden;
 	height: auto;
 }
-.ac-container label{
+
+.ac-container article label {
+    display: inline;
+    cursor: pointer;
+}
+
+div[id^="leaflet-control-accordion-layers"] > label {
 	font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
 	padding: 5px 20px;
 	position: relative;
@@ -48,25 +54,29 @@
 	background: -ms-linear-gradient(top, #ffffff 1%,#eaeaea 100%);
 	background: linear-gradient(top, #ffffff 1%,#eaeaea 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#eaeaea',GradientType=0 );
-	box-shadow: 
-		0px 0px 0px 1px rgba(155,155,155,0.3), 
-		1px 0px 0px 0px rgba(255,255,255,0.9) inset, 
+    width: auto;
+	box-shadow:
+		0px 0px 0px 1px rgba(155,155,155,0.3),
+		1px 0px 0px 0px rgba(255,255,255,0.9) inset,
 		0px 2px 2px rgba(0,0,0,0.1);
     box-sizing: content-box;
 }
-.ac-container label:hover{
+
+div[id^="leaflet-control-accordion-layers"] > label:hover {
 	background: #fff;
 }
+
 .ac-container input.menu:checked + label,
 .ac-container input.menu:checked + label:hover{
 	background: #c6e1ec;
 	color: #3d7489;
 	text-shadow: 0px 1px 1px rgba(255,255,255, 0.6);
-	box-shadow: 
-		0px 0px 0px 1px rgba(155,155,155,0.3), 
+	box-shadow:
+		0px 0px 0px 1px rgba(155,155,155,0.3),
 		0px 2px 2px rgba(0,0,0,0.1);
 }
-.ac-container label:hover:after,
+
+div[id^="leaflet-control-accordion-layers"] > label:hover:after,
 .ac-container input.menu:checked + label:hover:after{
 	content: '';
 	position: absolute;
@@ -74,7 +84,7 @@
 	height: 24px;
 	right: 13px;
 	top: 7px;
-	background: transparent url(images/arrow_down.png) no-repeat center center;	
+	background: transparent url(images/arrow_down.png) no-repeat center center;
 }
 .ac-container input.menu:checked + label:hover:after{
 	background-image: url(images/arrow_up.png);
@@ -115,27 +125,27 @@
 .menu-item-radio{
 	font-family: 'Ubuntu-Regular', Arial, sans-serif;
 	font-size: 13px;
-	
+
 }
 
 .menu-item-checkbox{
 	font-family: 'Ubuntu-Regular', Arial, sans-serif;
 	font-size: 13px;
-	
+
 }
 
 .bt_delete{
     position: relative;
 	float: right;
-	background-image: url(images/delete.png); 
-    background-color: transparent; 
-    background-repeat: no-repeat;  
-    background-position: 0px 0px;  
-    border: none;           
-    cursor: pointer;        
-    height: 16px;   
-    width: 16px;	
-    vertical-align: middle; 
+	background-image: url(images/delete.png);
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: 0px 0px;
+    border: none;
+    cursor: pointer;
+    height: 16px;
+    width: 16px;
+    vertical-align: middle;
 }
 
 .leaflet-control-layers:hover {
@@ -143,6 +153,3 @@
 	background: #e0e3ec url(images/bgnoise_lg.jpg) repeat top left;
 	border-radius: 5px;
 }
-
-
-
