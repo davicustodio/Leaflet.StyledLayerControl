@@ -37,10 +37,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         map
             .on('layeradd', this._onLayerChange, this)
-            .on('layerremove', this._onLayerChange, this)
-            // bv
-            .on('zoomend', this._onZoomEnd, this);
-
+            .on('layerremove', this._onLayerChange, this);
 
         return this._container;
     },
@@ -467,14 +464,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
     _collapse: function() {
         this._container.className = this._container.className.replace(' leaflet-control-layers-expanded', '');
-    },
+    }
 
-    _onZoomEnd: function(e) {
-
-        console.log(this._layers);
-
-        console.log(e);
-    },
 });
 
 L.Control.styledLayerControl = function(baseLayers, overlays, options) {
