@@ -37,7 +37,10 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         map
             .on('layeradd', this._onLayerChange, this)
-            .on('layerremove', this._onLayerChange, this);
+            .on('layerremove', this._onLayerChange, this)
+            // bv
+            .on('zoomend', this._onZoomEnd, this);
+
 
         return this._container;
     },
@@ -100,7 +103,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     	this.changeGroup( group_Name, false)
     },
 
-    changeGroup: function(group_Name, select){ 
+    changeGroup: function(group_Name, select){
     	for (group in this._groupList) {
             if (this._groupList[group].groupName == group_Name) {
                 for (layer in this._layers) {
@@ -300,22 +303,25 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     },
 
     _addItem: function(obj) {
+
         var label = document.createElement('div'),
             input,
             checked = this._map.hasLayer(obj.layer),
+            id = 'layer_'+obj.layer._leaflet_id,
             container;
-
 
         if (obj.overlay) {
             input = document.createElement('input');
             input.type = 'checkbox';
             input.className = 'leaflet-control-layers-selector';
             input.defaultChecked = checked;
+            input.id = id
 
             label.className = "menu-item-checkbox";
 
         } else {
             input = this._createRadioElement('leaflet-base-layers', checked);
+            input.id = id
 
             label.className = "menu-item-radio";
         }
@@ -323,10 +329,11 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         input.layerId = L.Util.stamp(obj.layer);
 
+
         L.DomEvent.on(input, 'click', this._onInputClick, this);
 
-        var name = document.createElement('span');
-        name.innerHTML = ' ' + obj.name;
+        var name = document.createElement('label');
+        name.innerHTML = '<label for="' + id + '">' + obj.name + '</label>';
 
         label.appendChild(input);
         label.appendChild(name);
@@ -345,7 +352,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             // configure the visible attribute to layer
 			if( obj.layer.StyledLayerControl.visible ){
 				this._map.addLayer(obj.layer);
-			}	
+			}
 
         }
 
@@ -369,7 +376,22 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             // verify if type is exclusive
             var s_type_exclusive = this.options.exclusive ? ' type="radio" ' : ' type="checkbox" ';
 
-            inputElement = '<input id="ac' + obj.group.id + '" name="accordion-1" class="menu" ' + s_expanded + s_type_exclusive + '/>';
+            var currentZoom = this._map.getZoom();
+
+            var disabled = '';
+            if (_.has(obj.layer.options, 'minZoom')) {
+                if (currentZoom < obj.layer.options.minZoom) {
+                        disabled = ' disabled="disabled" '
+                }
+            }
+
+            if (_.has(obj.layer.options, 'maxZoom')) {
+                if (currentZoom > obj.layer.options.maxZoom) {
+                    disabled = ' disabled="disabled" '
+                }
+            }
+
+            inputElement = '<input id="ac' + obj.group.id + '" name="accordion-1" class="menu" ' + s_expanded + s_type_exclusive + disabled +'/>';
             inputLabel = '<label for="ac' + obj.group.id + '">' + obj.group.name + '</label>';
 
             article = document.createElement('article');
@@ -445,7 +467,14 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
     _collapse: function() {
         this._container.className = this._container.className.replace(' leaflet-control-layers-expanded', '');
-    }
+    },
+
+    _onZoomEnd: function(e) {
+
+        console.log(this._layers);
+
+        console.log(e);
+    },
 });
 
 L.Control.styledLayerControl = function(baseLayers, overlays, options) {
