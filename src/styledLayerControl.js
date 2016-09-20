@@ -7,7 +7,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             show: false,
             labelAll: 'All',
             labelNone: 'None'
-        }
+        },
+        groupDeleteLabel: 'Delete the group'
     },
 
     initialize: function(baseLayers, groupedOverlays, options) {
@@ -98,23 +99,23 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         this._update();
     },
 
-    selectGroup: function(group_Name){
-    	this.changeGroup( group_Name, true)
+    selectGroup: function(group_Name) {
+        this.changeGroup(group_Name, true)
     },
 
-    unSelectGroup: function(group_Name){
-    	this.changeGroup( group_Name, false)
+    unSelectGroup: function(group_Name) {
+        this.changeGroup(group_Name, false)
     },
 
-    changeGroup: function(group_Name, select){
-    	for (group in this._groupList) {
+    changeGroup: function(group_Name, select) {
+        for (group in this._groupList) {
             if (this._groupList[group].groupName == group_Name) {
                 for (layer in this._layers) {
                     if (this._layers[layer].group && this._layers[layer].group.name == group_Name) {
-                        if( select ) {
-                        	this._map.addLayer(this._layers[layer].layer);
+                        if (select) {
+                            this._map.addLayer(this._layers[layer].layer);
                         } else {
-                        	this._map.removeLayer(this._layers[layer].layer);
+                            this._map.removeLayer(this._layers[layer].layer);
                         }
                     }
                 }
@@ -237,7 +238,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             this._layers[id].group = {
                 name: group.groupName,
                 id: groupId,
-                expanded: group.expanded
+                expanded: group.expanded,
+                removable: group.removable
             };
         }
 
@@ -301,7 +303,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         for (layerId in this._layers) {
             if (this._layers[layerId].layer.options && (this._layers[layerId].layer.options.minZoom || this._layers[layerId].layer.options.maxZoom)) {
-                var el = document.getElementById('ac_layer_input_'+this._layers[layerId].layer._leaflet_id);
+                var el = document.getElementById('ac_layer_input_' + this._layers[layerId].layer._leaflet_id);
                 if (currentZoom < this._layers[layerId].layer.options.minZoom || currentZoom > this._layers[layerId].layer.options.maxZoom) {
                     el.disabled = 'disabled';
                 } else {
@@ -330,7 +332,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         var label = document.createElement('div'),
             input,
             checked = this._map.hasLayer(obj.layer),
-            id = 'ac_layer_input_'+obj.layer._leaflet_id,
+            id = 'ac_layer_input_' + obj.layer._leaflet_id,
             container;
 
 
@@ -373,9 +375,9 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             }
 
             // configure the visible attribute to layer
-			if( obj.layer.StyledLayerControl.visible ){
-				this._map.addLayer(obj.layer);
-			}
+            if (obj.layer.StyledLayerControl.visible) {
+                this._map.addLayer(obj.layer);
+            }
 
         }
 
@@ -432,7 +434,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
                         .on(linkAll, 'click', L.DomEvent.stop)
                         .on(linkAll, 'click', this._onSelectGroup, this);
                 } else {
-                     L.DomEvent
+                    L.DomEvent
                         .on(linkAll, 'click', L.DomEvent.stop)
                         .on(linkAll, 'focus', this._onSelectGroup, this);
                 }
@@ -453,10 +455,36 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
                         .on(linkNone, 'click', L.DomEvent.stop)
                         .on(linkNone, 'click', this._onUnSelectGroup, this);
                 } else {
-                     L.DomEvent
+                    L.DomEvent
                         .on(linkNone, 'click', L.DomEvent.stop)
                         .on(linkNone, 'focus', this._onUnSelectGroup, this);
                 }
+
+                if (obj.overlay && this.options.group_togglers.show && obj.group.removable) {
+                    // Separator
+                    var separator = L.DomUtil.create('span', 'group-toggle-divider', togglerContainer);
+                    separator.innerHTML = ' / ';
+                }
+
+                if (obj.group.removable) {
+                    // Link delete group
+                    var linkRemove = L.DomUtil.create('a', 'group-toggle-none', togglerContainer);
+                    linkRemove.href = '#';
+                    linkRemove.title = this.options.groupDeleteLabel;
+                    linkRemove.innerHTML = this.options.groupDeleteLabel;
+                    linkRemove.setAttribute("data-group-name", obj.group.name);
+
+                    if (L.Browser.touch) {
+                        L.DomEvent
+                            .on(linkRemove, 'click', L.DomEvent.stop)
+                            .on(linkRemove, 'click', this._onRemoveGroup, this);
+                    } else {
+                        L.DomEvent
+                            .on(linkRemove, 'click', L.DomEvent.stop)
+                            .on(linkRemove, 'focus', this._onRemoveGroup, this);
+                    }
+                }
+
             }
 
             container.appendChild(groupContainer);
@@ -522,6 +550,10 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
     _onUnSelectGroup: function(e) {
         this.unSelectGroup(e.target.getAttribute("data-group-name"));
+    },
+
+    _onRemoveGroup: function(e) {
+        this.removeGroup(e.target.getAttribute("data-group-name"));
     },
 
     _expand: function() {
