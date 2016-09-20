@@ -22,12 +22,12 @@
 
 .ac-container{
 	width: auto;
-	margin: 10px auto 10px auto;
 	text-align: left;
 	overflow-y: auto;
 	overflow-x: hidden;
 	height: auto;
 }
+
 div[id^="leaflet-control-accordion-layers"] > label {
 	font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
 	padding: 5px 20px;
@@ -55,6 +55,7 @@ div[id^="leaflet-control-accordion-layers"] > label {
     box-sizing: content-box;
     cursor:pointer;
     width: auto;
+    margin: 0;
 }
 div[id^="leaflet-control-accordion-layers"] > label:hover {
 	background: #fff;
@@ -89,6 +90,7 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 	margin-top: -1px;
 	overflow: hidden;
 	height: 0px;
+    padding: 0px;
     line-height: 0px;
 	position: relative;
 	z-index: 10;
@@ -105,13 +107,12 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 	-o-transition: height 0.5s ease-in-out, box-shadow 0.1s linear;
 	-ms-transition: height 0.5s ease-in-out, box-shadow 0.1s linear;
 	transition: height 0.5s ease-in-out, box-shadow 0.1s linear;
-	box-shadow: 0px 0px 0px 1px rgba(155,155,155,0.3);
 }
 
 .ac-container input.menu:checked ~ article.ac-large{
 	height: auto;
 	max-height : 100px;
-	padding-top: 5px;
+	padding: 8px 0;
 	overflow-y: auto;
     line-height: 18px;
 }
@@ -119,6 +120,19 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
 .ac-container article label {
     display: inline;
     cursor: pointer;
+}
+
+.ac-container .group-toggle-container {
+    text-align: right;
+    margin-right: 3px;
+    line-height: 0px;
+    display: none;
+    height: 20px;
+}
+
+.ac-container input.menu:checked ~ .group-toggle-container {
+    display: block;
+	line-height: 1em;
 }
 
 .menu-item-radio{
@@ -145,6 +159,10 @@ div[id^="leaflet-control-accordion-layers"] > label:hover {
     height: 16px;
     width: 16px;
     vertical-align: middle;
+}
+
+.leaflet-control-layers-expanded {
+    padding: 5px;
 }
 
 .leaflet-control-layers:hover {

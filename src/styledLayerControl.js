@@ -2,7 +2,12 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     options: {
         collapsed: true,
         position: 'topright',
-        autoZIndex: true
+        autoZIndex: true,
+        group_togglers: {
+            show: false,
+            labelAll: 'All',
+            labelNone: 'None'
+        }
     },
 
     initialize: function(baseLayers, groupedOverlays, options) {
@@ -178,7 +183,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             }
 
             // set the max-height of control to y value of map object
-            this._default_maxHeight = this.options.container_maxHeight ? this.options.container_maxHeight : (this._map._size.y - 70);
+            this._default_maxHeight = this.options.container_maxHeight ? this.options.container_maxHeight : (this._map.getSize().y - 70);
             containers[c].style.maxHeight = this._default_maxHeight + "px";
 
         }
@@ -351,7 +356,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         L.DomEvent.on(input, 'click', this._onInputClick, this);
 
         var name = document.createElement('label');
-        name.innerHTML = '<label for="' + id + '"> ' + obj.name + '</label>';
+        name.innerHTML = '<label for="' + id + '">' + obj.name + '</label>';
 
         label.appendChild(input);
         label.appendChild(name);
@@ -408,12 +413,59 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
             groupContainer.innerHTML = inputElement + inputLabel;
             groupContainer.appendChild(article);
+
+            // Link to toggle all layers
+            if (obj.overlay && this.options.group_togglers.show) {
+
+                // Toggler container
+                var togglerContainer = L.DomUtil.create('div', 'group-toggle-container', groupContainer);
+
+                // Link All
+                var linkAll = L.DomUtil.create('a', 'group-toggle-all', togglerContainer);
+                linkAll.href = '#';
+                linkAll.title = this.options.group_togglers.labelAll;
+                linkAll.innerHTML = this.options.group_togglers.labelAll;
+                linkAll.setAttribute("data-group-name", obj.group.name);
+
+                if (L.Browser.touch) {
+                    L.DomEvent
+                        .on(linkAll, 'click', L.DomEvent.stop)
+                        .on(linkAll, 'click', this._onSelectGroup, this);
+                } else {
+                     L.DomEvent
+                        .on(linkAll, 'click', L.DomEvent.stop)
+                        .on(linkAll, 'focus', this._onSelectGroup, this);
+                }
+
+                // Separator
+                var separator = L.DomUtil.create('span', 'group-toggle-divider', togglerContainer);
+                separator.innerHTML = ' / ';
+
+                // Link none
+                var linkNone = L.DomUtil.create('a', 'group-toggle-none', togglerContainer);
+                linkNone.href = '#';
+                linkNone.title = this.options.group_togglers.labelNone;
+                linkNone.innerHTML = this.options.group_togglers.labelNone;
+                linkNone.setAttribute("data-group-name", obj.group.name);
+
+                if (L.Browser.touch) {
+                    L.DomEvent
+                        .on(linkNone, 'click', L.DomEvent.stop)
+                        .on(linkNone, 'click', this._onUnSelectGroup, this);
+                } else {
+                     L.DomEvent
+                        .on(linkNone, 'click', L.DomEvent.stop)
+                        .on(linkNone, 'focus', this._onUnSelectGroup, this);
+                }
+            }
+
             container.appendChild(groupContainer);
 
             this._domGroups[obj.group.id] = groupContainer;
         } else {
-            groupContainer.lastElementChild.appendChild(label);
+            groupContainer.getElementsByTagName('article')[0].appendChild(label);
         }
+
 
         return label;
     },
@@ -462,6 +514,14 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         obj.target.parentNode.remove();
 
         return false;
+    },
+
+    _onSelectGroup: function(e) {
+        this.selectGroup(e.target.getAttribute("data-group-name"));
+    },
+
+    _onUnSelectGroup: function(e) {
+        this.unSelectGroup(e.target.getAttribute("data-group-name"));
     },
 
     _expand: function() {
