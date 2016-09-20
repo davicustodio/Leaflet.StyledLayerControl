@@ -37,7 +37,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         map
             .on('layeradd', this._onLayerChange, this)
-            .on('layerremove', this._onLayerChange, this);
+            .on('layerremove', this._onLayerChange, this)
+            .on('zoomend', this._onZoomEnd, this);
 
         return this._container;
     },
@@ -100,7 +101,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     	this.changeGroup( group_Name, false)
     },
 
-    changeGroup: function(group_Name, select){ 
+    changeGroup: function(group_Name, select){
     	for (group in this._groupList) {
             if (this._groupList[group].groupName == group_Name) {
                 for (layer in this._layers) {
@@ -279,8 +280,29 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             (e.type === 'layeradd' ? 'overlayadd' : 'overlayremove') :
             (e.type === 'layeradd' ? 'baselayerchange' : null);
 
+        this._checkIfDisabled();
+
         if (type) {
             this._map.fire(type, obj);
+        }
+    },
+
+    _onZoomEnd: function(e) {
+        this._checkIfDisabled();
+    },
+
+    _checkIfDisabled: function(layers) {
+        var currentZoom = this._map.getZoom();
+
+        for (layerId in this._layers) {
+            if (this._layers[layerId].layer.options && (this._layers[layerId].layer.options.minZoom || this._layers[layerId].layer.options.maxZoom)) {
+                var el = document.getElementById('ac_layer_input_'+this._layers[layerId].layer._leaflet_id);
+                if (currentZoom < this._layers[layerId].layer.options.minZoom || currentZoom > this._layers[layerId].layer.options.maxZoom) {
+                    el.disabled = 'disabled';
+                } else {
+                    el.disabled = '';
+                }
+            }
         }
     },
 
@@ -303,6 +325,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         var label = document.createElement('div'),
             input,
             checked = this._map.hasLayer(obj.layer),
+            id = 'ac_layer_input_'+obj.layer._leaflet_id,
             container;
 
 
@@ -313,11 +336,13 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             input.defaultChecked = checked;
 
             label.className = "menu-item-checkbox";
+            input.id = id;
 
         } else {
             input = this._createRadioElement('leaflet-base-layers', checked);
 
             label.className = "menu-item-radio";
+            input.id = id;
         }
 
 
@@ -325,8 +350,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         L.DomEvent.on(input, 'click', this._onInputClick, this);
 
-        var name = document.createElement('span');
-        name.innerHTML = ' ' + obj.name;
+        var name = document.createElement('label');
+        name.innerHTML = '<label for="' + id + '"> ' + obj.name + '</label>';
 
         label.appendChild(input);
         label.appendChild(name);
@@ -345,7 +370,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             // configure the visible attribute to layer
 			if( obj.layer.StyledLayerControl.visible ){
 				this._map.addLayer(obj.layer);
-			}	
+			}
 
         }
 
