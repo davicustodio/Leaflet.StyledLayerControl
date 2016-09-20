@@ -92,6 +92,21 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         }
     },
 
+    removeAllGroups: function(del) {
+        for (group in this._groupList) {
+                for (layer in this._layers) {
+                    if (this._layers[layer].group && this._layers[layer].group.removable) {
+                        if (del) {
+                            this._map.removeLayer(this._layers[layer].layer);
+                        }
+                        delete this._layers[layer];
+                    }
+                }
+                delete this._groupList[group];
+        }
+        this._update();
+    },
+
     selectLayer: function(layer) {
         this._map.addLayer(layer);
         this._update();
