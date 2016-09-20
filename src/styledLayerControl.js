@@ -74,11 +74,14 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         return this;
     },
 
-    removeGroup: function(group_Name) {
+    removeGroup: function(group_Name, del) {
         for (group in this._groupList) {
             if (this._groupList[group].groupName == group_Name) {
                 for (layer in this._layers) {
                     if (this._layers[layer].group && this._layers[layer].group.name == group_Name) {
+                        if (del) {
+                            this._map.removeLayer(this._layers[layer].layer);
+                        }
                         delete this._layers[layer];
                     }
                 }
@@ -256,6 +259,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         this._baseLayersList.innerHTML = '';
         this._overlaysList.innerHTML = '';
+
         this._domGroups.length = 0;
 
         var baseLayersPresent = false,
@@ -553,7 +557,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     },
 
     _onRemoveGroup: function(e) {
-        this.removeGroup(e.target.getAttribute("data-group-name"));
+        this.removeGroup(e.target.getAttribute("data-group-name"), true);
     },
 
     _expand: function() {
