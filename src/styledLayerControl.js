@@ -2,7 +2,13 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     options: {
         collapsed: true,
         position: 'topright',
-        autoZIndex: true
+        autoZIndex: true,
+        group_togglers: {
+            show: false,
+            labelAll: 'All',
+            labelNone: 'None'
+        },
+        groupDeleteLabel: 'Delete the group'
     },
 
     initialize: function(baseLayers, groupedOverlays, options) {
@@ -37,7 +43,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         map
             .on('layeradd', this._onLayerChange, this)
-            .on('layerremove', this._onLayerChange, this);
+            .on('layerremove', this._onLayerChange, this)
+            .on('zoomend', this._onZoomEnd, this);
 
         return this._container;
     },
@@ -67,11 +74,14 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         return this;
     },
 
-    removeGroup: function(group_Name) {
+    removeGroup: function(group_Name, del) {
         for (group in this._groupList) {
             if (this._groupList[group].groupName == group_Name) {
                 for (layer in this._layers) {
                     if (this._layers[layer].group && this._layers[layer].group.name == group_Name) {
+                        if (del) {
+                            this._map.removeLayer(this._layers[layer].layer);
+                        }
                         delete this._layers[layer];
                     }
                 }
@@ -80,6 +90,21 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
                 break;
             }
         }
+    },
+
+    removeAllGroups: function(del) {
+        for (group in this._groupList) {
+                for (layer in this._layers) {
+                    if (this._layers[layer].group && this._layers[layer].group.removable) {
+                        if (del) {
+                            this._map.removeLayer(this._layers[layer].layer);
+                        }
+                        delete this._layers[layer];
+                    }
+                }
+                delete this._groupList[group];
+        }
+        this._update();
     },
 
     selectLayer: function(layer) {
@@ -92,23 +117,23 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         this._update();
     },
 
-    selectGroup: function(group_Name){
-    	this.changeGroup( group_Name, true)
+    selectGroup: function(group_Name) {
+        this.changeGroup(group_Name, true)
     },
 
-    unSelectGroup: function(group_Name){
-    	this.changeGroup( group_Name, false)
+    unSelectGroup: function(group_Name) {
+        this.changeGroup(group_Name, false)
     },
 
-    changeGroup: function(group_Name, select){ 
-    	for (group in this._groupList) {
+    changeGroup: function(group_Name, select) {
+        for (group in this._groupList) {
             if (this._groupList[group].groupName == group_Name) {
                 for (layer in this._layers) {
                     if (this._layers[layer].group && this._layers[layer].group.name == group_Name) {
-                        if( select ) {
-                        	this._map.addLayer(this._layers[layer].layer);
+                        if (select) {
+                            this._map.addLayer(this._layers[layer].layer);
                         } else {
-                        	this._map.removeLayer(this._layers[layer].layer);
+                            this._map.removeLayer(this._layers[layer].layer);
                         }
                     }
                 }
@@ -177,7 +202,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             }
 
             // set the max-height of control to y value of map object
-            this._default_maxHeight = this.options.container_maxHeight ? this.options.container_maxHeight : (this._map._size.y - 70);
+            this._default_maxHeight = this.options.container_maxHeight ? this.options.container_maxHeight : (this._map.getSize().y - 70);
             containers[c].style.maxHeight = this._default_maxHeight + "px";
 
         }
@@ -231,7 +256,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             this._layers[id].group = {
                 name: group.groupName,
                 id: groupId,
-                expanded: group.expanded
+                expanded: group.expanded,
+                removable: group.removable
             };
         }
 
@@ -248,6 +274,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         this._baseLayersList.innerHTML = '';
         this._overlaysList.innerHTML = '';
+
         this._domGroups.length = 0;
 
         var baseLayersPresent = false,
@@ -279,8 +306,29 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             (e.type === 'layeradd' ? 'overlayadd' : 'overlayremove') :
             (e.type === 'layeradd' ? 'baselayerchange' : null);
 
+        this._checkIfDisabled();
+
         if (type) {
             this._map.fire(type, obj);
+        }
+    },
+
+    _onZoomEnd: function(e) {
+        this._checkIfDisabled();
+    },
+
+    _checkIfDisabled: function(layers) {
+        var currentZoom = this._map.getZoom();
+
+        for (layerId in this._layers) {
+            if (this._layers[layerId].layer.options && (this._layers[layerId].layer.options.minZoom || this._layers[layerId].layer.options.maxZoom)) {
+                var el = document.getElementById('ac_layer_input_' + this._layers[layerId].layer._leaflet_id);
+                if (currentZoom < this._layers[layerId].layer.options.minZoom || currentZoom > this._layers[layerId].layer.options.maxZoom) {
+                    el.disabled = 'disabled';
+                } else {
+                    el.disabled = '';
+                }
+            }
         }
     },
 
@@ -303,6 +351,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         var label = document.createElement('div'),
             input,
             checked = this._map.hasLayer(obj.layer),
+            id = 'ac_layer_input_' + obj.layer._leaflet_id,
             container;
 
 
@@ -313,11 +362,13 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             input.defaultChecked = checked;
 
             label.className = "menu-item-checkbox";
+            input.id = id;
 
         } else {
             input = this._createRadioElement('leaflet-base-layers', checked);
 
             label.className = "menu-item-radio";
+            input.id = id;
         }
 
 
@@ -325,8 +376,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         L.DomEvent.on(input, 'click', this._onInputClick, this);
 
-        var name = document.createElement('span');
-        name.innerHTML = ' ' + obj.name;
+        var name = document.createElement('label');
+        name.innerHTML = '<label for="' + id + '">' + obj.name + '</label>';
 
         label.appendChild(input);
         label.appendChild(name);
@@ -343,9 +394,9 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             }
 
             // configure the visible attribute to layer
-			if( obj.layer.StyledLayerControl.visible ){
-				this._map.addLayer(obj.layer);
-			}	
+            if (obj.layer.StyledLayerControl.visible) {
+                this._map.addLayer(obj.layer);
+            }
 
         }
 
@@ -383,12 +434,85 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
             groupContainer.innerHTML = inputElement + inputLabel;
             groupContainer.appendChild(article);
+
+            // Link to toggle all layers
+            if (obj.overlay && this.options.group_togglers.show) {
+
+                // Toggler container
+                var togglerContainer = L.DomUtil.create('div', 'group-toggle-container', groupContainer);
+
+                // Link All
+                var linkAll = L.DomUtil.create('a', 'group-toggle-all', togglerContainer);
+                linkAll.href = '#';
+                linkAll.title = this.options.group_togglers.labelAll;
+                linkAll.innerHTML = this.options.group_togglers.labelAll;
+                linkAll.setAttribute("data-group-name", obj.group.name);
+
+                if (L.Browser.touch) {
+                    L.DomEvent
+                        .on(linkAll, 'click', L.DomEvent.stop)
+                        .on(linkAll, 'click', this._onSelectGroup, this);
+                } else {
+                    L.DomEvent
+                        .on(linkAll, 'click', L.DomEvent.stop)
+                        .on(linkAll, 'focus', this._onSelectGroup, this);
+                }
+
+                // Separator
+                var separator = L.DomUtil.create('span', 'group-toggle-divider', togglerContainer);
+                separator.innerHTML = ' / ';
+
+                // Link none
+                var linkNone = L.DomUtil.create('a', 'group-toggle-none', togglerContainer);
+                linkNone.href = '#';
+                linkNone.title = this.options.group_togglers.labelNone;
+                linkNone.innerHTML = this.options.group_togglers.labelNone;
+                linkNone.setAttribute("data-group-name", obj.group.name);
+
+                if (L.Browser.touch) {
+                    L.DomEvent
+                        .on(linkNone, 'click', L.DomEvent.stop)
+                        .on(linkNone, 'click', this._onUnSelectGroup, this);
+                } else {
+                    L.DomEvent
+                        .on(linkNone, 'click', L.DomEvent.stop)
+                        .on(linkNone, 'focus', this._onUnSelectGroup, this);
+                }
+
+                if (obj.overlay && this.options.group_togglers.show && obj.group.removable) {
+                    // Separator
+                    var separator = L.DomUtil.create('span', 'group-toggle-divider', togglerContainer);
+                    separator.innerHTML = ' / ';
+                }
+
+                if (obj.group.removable) {
+                    // Link delete group
+                    var linkRemove = L.DomUtil.create('a', 'group-toggle-none', togglerContainer);
+                    linkRemove.href = '#';
+                    linkRemove.title = this.options.groupDeleteLabel;
+                    linkRemove.innerHTML = this.options.groupDeleteLabel;
+                    linkRemove.setAttribute("data-group-name", obj.group.name);
+
+                    if (L.Browser.touch) {
+                        L.DomEvent
+                            .on(linkRemove, 'click', L.DomEvent.stop)
+                            .on(linkRemove, 'click', this._onRemoveGroup, this);
+                    } else {
+                        L.DomEvent
+                            .on(linkRemove, 'click', L.DomEvent.stop)
+                            .on(linkRemove, 'focus', this._onRemoveGroup, this);
+                    }
+                }
+
+            }
+
             container.appendChild(groupContainer);
 
             this._domGroups[obj.group.id] = groupContainer;
         } else {
-            groupContainer.lastElementChild.appendChild(label);
+            groupContainer.getElementsByTagName('article')[0].appendChild(label);
         }
+
 
         return label;
     },
@@ -437,6 +561,18 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
         obj.target.parentNode.remove();
 
         return false;
+    },
+
+    _onSelectGroup: function(e) {
+        this.selectGroup(e.target.getAttribute("data-group-name"));
+    },
+
+    _onUnSelectGroup: function(e) {
+        this.unSelectGroup(e.target.getAttribute("data-group-name"));
+    },
+
+    _onRemoveGroup: function(e) {
+        this.removeGroup(e.target.getAttribute("data-group-name"), true);
     },
 
     _expand: function() {
