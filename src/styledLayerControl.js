@@ -16,7 +16,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             j;
         L.Util.setOptions(this, options);
 
-        this._layers = {};
+        this._layerControlInputs = [];
+        this._layers = [];
         this._lastZIndex = 0;
         this._handlingClick = false;
         this._groupList = [];
@@ -277,6 +278,8 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         this._domGroups.length = 0;
 
+        this._layerControlInputs = [];
+
         var baseLayersPresent = false,
             overlaysPresent = false,
             i,
@@ -371,7 +374,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
             input.id = id;
         }
 
-
+        this._layerControlInputs.push(input);
         input.layerId = L.Util.stamp(obj.layer);
 
         L.DomEvent.on(input, 'click', this._onInputClick, this);
@@ -515,34 +518,6 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
 
         return label;
-    },
-
-    _onInputClick: function() {
-        var i,
-            input,
-            obj,
-            inputs = this._form.getElementsByTagName('input'),
-            inputsLen = inputs.length;
-
-        this._handlingClick = true;
-
-        for (i = 0; i < inputsLen; i++) {
-            input = inputs[i];
-            obj = this._layers[input.layerId];
-
-            if (!obj) {
-                continue;
-            }
-
-            if (input.checked && !this._map.hasLayer(obj.layer)) {
-                this._map.addLayer(obj.layer);
-
-            } else if (!input.checked && this._map.hasLayer(obj.layer)) {
-                this._map.removeLayer(obj.layer);
-            }
-        }
-
-        this._handlingClick = false;
     },
 
     _onDeleteClick: function(obj) {
