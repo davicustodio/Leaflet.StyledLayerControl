@@ -307,7 +307,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         var type = obj.overlay ?
             (e.type === 'layeradd' ? 'overlayadd' : 'overlayremove') :
-            (e.type === 'layeradd' ? 'baselayerchange' : null);
+            null;
 
         this._checkIfDisabled();
 
