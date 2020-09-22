@@ -57,10 +57,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
     },
 
     addBaseLayer: function(layer, name, group) {
-        if (!layer.options) {
-            layer.options = {} ;
-        }
-        layer.options['isBaseLayer'] = true ;
+        layer['isBaseLayer'] = true ;
         this._addLayer(layer, name, group, false);
         this._update();
         return this;
@@ -311,7 +308,7 @@ L.Control.StyledLayerControl = L.Control.Layers.extend({
 
         var type = obj.overlay ?
             (e.type === 'layeradd' ? 'overlayadd' : 'overlayremove') :
-            e.type === 'layeradd' && e.layer.options.isBaseLayer ?
+            e.type === 'layeradd' && e.layer.isBaseLayer ?
                 'baselayerchange' :
                 null;
 
